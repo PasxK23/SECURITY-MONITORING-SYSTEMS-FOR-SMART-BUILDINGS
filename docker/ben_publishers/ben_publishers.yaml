@@ -1,0 +1,269 @@
+# --- TEMP SENSOR F1 RA---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temp-sensor-f1-ra
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temp-sensor-ra
+  template:
+    metadata:
+      labels:
+        app: temp-sensor-ra
+    spec:
+      containers:
+      - name: publisher
+        image: ben_publishers:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+        env:
+        - name: DEVICE_ID
+          value: "TempSensor_F1_RA"
+        - name: TOPIC
+          value: "building/floor1/roomA/temp"
+---
+# --- TEMP SENSOR F1 RB ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: temp-sensor-f1-rb
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: temp-f1-rb
+  template:
+    metadata:
+      labels:
+        app: temp-f1-rb
+    spec:
+      containers:
+      - name: publisher
+        image: ben_publishers:latest
+        imagePullPolicy: Never
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+        env:
+        - name: DEVICE_ID
+          value: "TempSensor_F1_RB"
+        - name: TOPIC
+          value: "building/floor1/roomB/temp"
+
+---
+# --- TEMP SENSOR F2 RA ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: temp-sensor-f2-ra
+#   namespace: emqx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: temp-f2-ra
+#   template:
+#     metadata:
+#       labels:
+#         app: temp-f2-ra
+#     spec:
+#       containers:
+#       - name: publisher
+#         image: ben_publishers:latest
+#         imagePullPolicy: Never
+#         resources:
+#           limits:
+#             memory: "64Mi"
+#             cpu: "100m"
+#           requests:
+#             memory: "32Mi"
+#             cpu: "50m"
+#         env:
+#         - name: DEVICE_ID
+#           value: "TempSensor_F2_RA"
+#         - name: TOPIC
+#           value: "building/floor2/roomA/temp"
+
+---
+# --- DOOR SENSOR F1 RA ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: door-sensor-f1-ra
+#   namespace: emqx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: door-f1-ra
+#   template:
+#     metadata:
+#       labels:
+#         app: door-f1-ra
+#     spec:
+#       containers:
+#       - name: publisher
+#         image: ben_publishers:latest
+#         imagePullPolicy: Never
+#         resources:
+#           limits:
+#             memory: "64Mi"
+#             cpu: "100m"
+#           requests:
+#             memory: "32Mi"
+#             cpu: "50m"
+#         env:
+#         - name: DEVICE_ID
+#           value: "DoorSensor_F1_RA"
+#         - name: TOPIC
+#           value: "building/floor1/roomA/door"
+
+# ---
+# # --- DOOR SENSOR F1 RB ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: door-sensor-f1-rb
+#   namespace: emqx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: door-f1-rb
+#   template:
+#     metadata:
+#       labels:
+#         app: door-f1-rb
+#     spec:
+#       containers:
+#       - name: publisher
+#         image: ben_publishers:latest
+#         imagePullPolicy: Never
+#         resources:
+#           limits:
+#             memory: "64Mi"
+#             cpu: "100m"
+#           requests:
+#             memory: "32Mi"
+#             cpu: "50m"
+#         env:
+#         - name: DEVICE_ID
+#           value: "DoorSensor_F1_RB"
+#         - name: TOPIC
+#           value: "building/floor1/roomB/door"
+
+# ---
+# # --- ENERGY FLOOR 1 ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: energy-floor-1
+#   namespace: emqx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: energy-f1
+#   template:
+#     metadata:
+#       labels:
+#         app: energy-f1
+#     spec:
+#       containers:
+#       - name: publisher
+#         image: ben_publishers:latest
+#         imagePullPolicy: Never
+#         resources:
+#           limits:
+#             memory: "64Mi"
+#             cpu: "100m"
+#           requests:
+#             memory: "32Mi"
+#             cpu: "50m"
+#         env:
+#         - name: DEVICE_ID
+#           value: "Meter_F1_RA"
+#         - name: TOPIC
+#           value: "building/floor1/roomA/power"
+
+# ---
+# # --- ENERGY FLOOR 2 ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: energy-floor-2
+#   namespace: emqx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: energy-f2
+#   template:
+#     metadata:
+#       labels:
+#         app: energy-f2
+#     spec:
+#       containers:
+#       - name: publisher
+#         image: ben_publishers:latest
+#         imagePullPolicy: Never
+#         resources:
+#           limits:
+#             memory: "64Mi"
+#             cpu: "100m"
+#           requests:
+#             memory: "32Mi"
+#             cpu: "50m"
+#         env:
+#         - name: DEVICE_ID
+#           value: "Meter_F2_RB"
+#         - name: TOPIC
+#           value: "building/floor2/roomB/power"
+
+# ---
+# # --- SMOKE DETECTOR F1 RA ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: smoke-detector-f1-ra
+#   namespace: emqx
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: smoke-f1-ra
+#   template:
+#     metadata:
+#       labels:
+#         app: smoke-f1-ra
+#     spec:
+#       containers:
+#       - name: publisher
+#         image: ben_publishers:latest
+#         imagePullPolicy: Never
+#         resources:
+#           limits:
+#             memory: "64Mi"
+#             cpu: "100m"
+#           requests:
+#             memory: "32Mi"
+#             cpu: "50m"
+#         env:
+#         - name: DEVICE_ID
+#           value: "SmokeDetector_F1_RA"
+#         - name: TOPIC
+#           value: "building/floor1/roomA/smoke"

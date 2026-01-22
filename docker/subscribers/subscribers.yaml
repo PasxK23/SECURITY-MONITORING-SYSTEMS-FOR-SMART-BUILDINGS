@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: building-universal-monitor
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: building-monitor
+  template:
+    metadata:
+      labels:
+        app: building-monitor
+    spec:
+      containers:
+      - name: monitor
+        image: subscribers:latest
+        imagePullPolicy: Never
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "32Mi"
+          limits:
+            cpu: "100m"
+            memory: "64Mi"

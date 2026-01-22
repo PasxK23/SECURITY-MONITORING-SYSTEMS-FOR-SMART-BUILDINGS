@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: emqx
+  namespace: emqx
+spec:
+  serviceName: emqx-headless
+  replicas: 3
+  selector:
+    matchLabels:
+      app: emqx
+  template:
+    metadata:
+      labels:
+        app: emqx
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: emqx
+        image: emqx/emqx:5.8.8
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        env:
+        - name: EMQX_CONFIG_FILES
+          value: "/opt/emqx/etc/emqx.conf,/opt/emqx/etc/base.hocon"
+        - name: EMQX_CLUSTER__DISCOVERY_STRATEGY
+          value: "dns"
+        - name: EMQX_CLUSTER__DNS__RECORD_TYPE
+          value: "a"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: HEADLESS_SERVICE
+          value: "emqx-headless"
+        - name: EMQX_NODE__COOKIE
+          valueFrom:
+            secretKeyRef:
+              name: emqx-secret
+              key: EMQX_NODE__COOKIE
+        - name: EMQX_DASHBOARD__DEFAULT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: emqx-secret
+              key: EMQX_DASHBOARD__DEFAULT_PASSWORD
+        volumeMounts:
+        - name: emqx-data
+          mountPath: /opt/emqx/data
+        - name: emqx-base-config
+          mountPath: /opt/emqx/etc/base.hocon
+          subPath: base.hocon
+      volumes:
+      - name: emqx-base-config
+        configMap:
+          name: emqx-base-config
+  volumeClaimTemplates:
+  - metadata:
+      name: emqx-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi

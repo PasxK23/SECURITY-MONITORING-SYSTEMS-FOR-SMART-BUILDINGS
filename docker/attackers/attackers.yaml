@@ -1,0 +1,272 @@
+# --- FLOOD ATTACK ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-flood
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-flood
+  template:
+    metadata:
+      labels:
+        app: attack-flood
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_flood.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "0"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+---
+# --- IMPOSTOR ATTACK ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-impostor
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-impostor
+  template:
+    metadata:
+      labels:
+        app: attack-impostor
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_impostor.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "2"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+---
+# --- FUZZER ATTACK ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-fuzzer
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-fuzzer
+  template:
+    metadata:
+      labels:
+        app: attack-fuzzer
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_fuzzer.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "4"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+---
+# --- QOS EXHAUSTION ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-qos-ex
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-qos-ex
+  template:
+    metadata:
+      labels:
+        app: attack-qos-ex
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_qos_ex.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "4"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+--- # --- RETAIN ATTACK ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-retain
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-retain
+  template:
+    metadata:
+      labels:
+        app: attack-retain
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_retain.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "6"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+--- # --- SEMANTIC FUZZER ATTACK ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-semant-fuzz
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-semant-fuzz
+  template:
+    metadata:
+      labels:
+        app: attack-semant-fuzz
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_semant_fuzz.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "8"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+--- # --- STEALTH FLOOD ATTACK ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attack-stealth-flood
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attack-stealth-flood
+  template:
+    metadata:
+      labels:
+        app: attack-stealth-flood
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_stealth_flood.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        - name: INITIAL_DELAY
+          value: "8"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+
+--- # ---Control Malicious Attackers---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: control-mal
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: control-mal
+  template:
+    metadata:
+      labels:
+        app: control-mal
+    spec:
+      containers:
+      - name: attacker
+        image: attackers:latest
+        imagePullPolicy: Never
+        command: ["python", "pub_control_mal.py"]
+        env:
+        - name: BROKER_HOST
+          value: "emqx"
+        resources:
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+          requests:
+            memory: "32Mi"
+            cpu: "50m"

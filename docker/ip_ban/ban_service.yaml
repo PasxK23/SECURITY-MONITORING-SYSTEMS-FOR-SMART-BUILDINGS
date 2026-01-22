@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ban-service
+  namespace: emqx
+spec:
+  selector:
+    matchLabels:
+      app: ban-service
+  template:
+    metadata:
+      labels:
+        app: ban-service
+    spec:
+      hostNetwork: true   
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: ban-service
+        image: ban-service:latest
+        imagePullPolicy: Never
+        securityContext:
+            privileged: true
+        env:
+        - name: REDIS_HOST
+          value: redis-service.emqx
+        - name: EMQX_API_HOST
+          value: emqx.emqx 
+        - name: EMQX_API_KEY
+          value: enter_your_key_here   
+        - name: EMQX_API_SECRET_KEY
+          value: enter_your_secret_key_here  
+        resources:
+          limits:
+            cpu: "200m"      
+            memory: "128Mi" 
+          requests:
+            cpu: "50m"      
+            memory: "64Mi"    

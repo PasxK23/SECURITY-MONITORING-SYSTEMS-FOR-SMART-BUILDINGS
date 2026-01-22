@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: score-manager
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: score-manager
+  template:
+    metadata:
+      labels:
+        app: score-manager
+    spec:
+      containers:
+      - name: manager
+        image: score-manager:latest
+        imagePullPolicy: Never
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: EMQX_API_HOST
+          value: "emqx" 
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "300m"
+            memory: "256Mi"

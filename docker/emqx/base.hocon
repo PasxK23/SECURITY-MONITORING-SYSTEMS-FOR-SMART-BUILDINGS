@@ -1,0 +1,57 @@
+node {
+      name = "emqx@${POD_NAME}.${HEADLESS_SERVICE}.${NAMESPACE}.svc.cluster.local"
+      cookie = "${EMQX_NODE__COOKIE}"
+      data_dir = "/opt/emqx/data"
+    }
+
+    cluster {
+      discovery_strategy = dns
+      dns {
+        name = "emqx-headless.emqx.svc.cluster.local"
+        record_type = a
+      }
+    }
+
+    listeners.tcp.default {
+      bind = "0.0.0.0:1883"
+
+      max_connections = 30
+      max_conn_rate = "10/s"
+      messages_rate = "8/s"
+      acceptors = 16
+      proxy_protocol = false
+
+
+      tcp_options {
+        backlog = 1024
+        nodelay = true
+        send_timeout = "15s"
+        buffer = "4KB"
+        high_watermark = "1MB"
+      }
+    }
+    listener.ws.default = 8083
+
+
+    authorization {
+      no_match = allow
+
+        sources = [
+        {
+          type = http
+          enable = true
+          url = "http://fastapi-service.emqx.svc.cluster.local:8080/mqtt/authz"
+          method = post
+          headers {
+            "content-type" = "application/json"
+          }
+          connect_timeout = "10s"
+          request_timeout = "10s"
+        }
+      ]
+    }
+
+
+    log.console {
+      level = info
+    }

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mqtt-sniffer
+  namespace: emqx
+spec:
+  selector:
+    matchLabels:
+      app: mqtt-sniffer
+  template:
+    metadata:
+      labels:
+        app: mqtt-sniffer
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: sniffer
+        image: sniffer:latest
+        imagePullPolicy: Never
+        securityContext:
+          privileged: true
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+        env:
+        - name: REDIS_HOST
+          value: redis-service.emqx

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-ids
+  namespace: emqx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-ids
+  template:
+    metadata:
+      labels:
+        app: fastapi-ids
+    spec:
+      containers:
+      - name: fastapi-container
+        image: fastapi-ids:latest
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+        imagePullPolicy: Never 
+        ports:
+        - containerPort: 8080
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+  namespace: emqx
+spec:
+  selector:
+    app: fastapi-ids
+  ports:
+    - protocol: TCP
+      port: 8080        
+      targetPort: 8080  
+  type: ClusterIP
